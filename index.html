@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Imperial Estates</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    * {
+      font-family: 'Poppins', sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: #050505;
+      overflow-x: hidden;
+    }
+
+    .glass {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .gold-text {
+      background: linear-gradient(to right,#facc15,#f59e0b,#fb923c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-overlay {
+      background: linear-gradient(to bottom,rgba(0,0,0,0.75),rgba(0,0,0,0.45),#050505);
+    }
+
+    .property-card:hover img {
+      transform: scale(1.08);
+    }
+
+    .hidden-admin {
+      display: none;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+
+<body class="text-white">
+
+  <!-- HEADER -->
+  <header class="fixed top-0 left-0 w-full z-50 glass">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+      <h1 class="text-2xl md:text-3xl font-black uppercase tracking-[0.3em] text-yellow-400">
+        Imperial Estates
+      </h1>
+
+      <nav class="hidden md:flex gap-8 uppercase tracking-wider text-sm text-gray-300">
+        <a href="#properties" class="hover:text-yellow-400">Properties</a>
+        <a href="#tour" class="hover:text-yellow-400">360 Tour</a>
+        <a href="#admin" class="hover:text-yellow-400">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="relative h-screen flex items-center justify-center text-center overflow-hidden px-6">
+
+    <img
+      src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1800&auto=format&fit=crop"
+      class="absolute inset-0 w-full h-full object-cover"
+    />
+
+    <div class="absolute inset-0 hero-overlay"></div>
+
+    <div class="relative z-10 max-w-5xl">
+
+      <div class="inline-block px-6 py-3 rounded-full glass text-yellow-300 tracking-[0.25em] uppercase text-xs mb-8">
+        NFC Powered Luxury Real Estate Platform
+      </div>
+
+      <h1 class="text-6xl md:text-8xl font-black leading-[0.95] mb-8">
+        Luxury
+        <span class="block gold-text">
+          Property Experience
+        </span>
+      </h1>
+
+      <p class="text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto">
+        Explore premium properties, immersive 360° tours, luxury interiors,
+        smart NFC experiences and direct WhatsApp inquiry.
+      </p>
+
+      <div class="mt-10 flex flex-wrap justify-center gap-5">
+
+        <button 
+          onclick="window.location.href='#properties'"
+          class="px-10 py-5 rounded-full bg-gradient-to-r from-yellow-300 to-orange-500 text-black font-bold shadow-2xl hover:scale-105 transition-all duration-300">
+          Explore Properties
+        </button>
+
+        <button class="px-10 py-5 rounded-full glass hover:bg-white/10 transition-all duration-300">
+          Schedule Site Visit
+        </button>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PROPERTY SECTION -->
+  <section id="properties" class="py-28 px-6">
+
+    <div class="max-w-7xl mx-auto">
+
+      <div class="text-center mb-20">
+        <div class="text-yellow-400 uppercase tracking-[0.35em] text-sm mb-4">
+          Featured Listings
+        </div>
+
+        <h2 class="text-5xl md:text-7xl font-black leading-none">
+          Premium
+          <span class="block text-white/40">Properties</span>
+        </h2>
+      </div>
+
+      <!-- Loading Indicator -->
+      <div id="loadingIndicator" class="text-center py-20">
+        <div class="loading mx-auto"></div>
+        <p class="mt-4 text-gray-400">Loading properties...</p>
+      </div>
+
+      <div id="propertyContainer" class="grid gap-12"></div>
+
+    </div>
+  </section>
+
+  <!-- 360 VIEWER -->
+  <section id="tour" class="py-28 px-6 bg-black">
+
+    <div class="max-w-7xl mx-auto">
+
+      <div class="text-center mb-16">
+        <div class="text-yellow-400 uppercase tracking-[0.35em] text-sm mb-4">
+          Immersive Experience
+        </div>
+
+        <h2 class="text-5xl md:text-7xl font-black leading-none">
+          360°
+          <span class="block text-white/40">Property Tour</span>
+        </h2>
+      </div>
+
+      <div class="glass rounded-[40px] overflow-hidden p-5 shadow-2xl">
+
+        <iframe
+          id="viewer360"
+          width="100%"
+          height="700"
+          allowfullscreen
+          class="rounded-[30px]"
+          src=""
+        ></iframe>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ADMIN -->
+  <section id="admin" class="py-28 px-6">
+
+    <div class="max-w-5xl mx-auto">
+
+      <div class="text-center mb-16">
+        <div class="text-yellow-400 uppercase tracking-[0.35em] text-sm mb-4">
+          Admin Dashboard
+        </div>
+
+        <h2 class="text-5xl md:text-7xl font-black leading-none">
+          Property
+          <span class="block text-white/40">Management</span>
+        </h2>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="loginBox" class="glass rounded-[40px] p-10 shadow-2xl">
+
+        <div class="grid gap-6">
+
+          <input
+            type="text"
+            id="username"
+            placeholder="Admin Username"
+            class="bg-black/40 border border-white/10 rounded-2xl p-5 outline-none"
+          />
+
+          <input
+            type="password"
+            id="password"
+            placeholder="Admin Password"
+            class="bg-black/40 border border-white/10 rounded-2xl p-5 outline-none"
+          />
+
+          <button
+            onclick="loginAdmin()"
+            class="px-8 py-5 rounded-full bg-gradient-to-r from-yellow-300 to-orange-500 text-black font-bold hover:scale-105 transition-all duration-300"
+          >
+            Admin Login
+          </button>
+
+        </div>
+      </div>
+
+      <!-- ADMIN PANEL -->
+      <div id="adminPanel" class="hidden-admin glass rounded-[40px] p-10 shadow-2xl mt-10">
+
+        <div class="grid md:grid-cols-2 gap-6">
+
+          <input type="text" id="title" placeholder="Property Title" class="bg-black/40 border border-white/10 rounded-2xl p-5 outline-none">
+
+          <input type="text" id="location" placeholder="Location" class="bg-black/40 border border-white/10 rounded-2xl p-5 outline-none">
+
+          <input type="text" id="price" placeholder="Price" class="bg-black/40 border border-white/10 rounded-2xl p-5 outline-none">
+
+          <input type="text" id="type" placeholder="Property Type" class="bg-black/40 border border-white/10 rounded-2xl p-5 outline-none">
+
+          <input type="text" id="area" placeholder="Property Area" class="bg-black/40 border border-white/10 rounded-2xl p-5 outline-none">
+
+          <input type="text" id="image" placeholder="Main Image URL" class="bg-black/40 border border-white/10 rounded-2xl p-5 outline-none">
+
+          <input type="text" id="panorama" placeholder="360 Panorama Image URL" class="bg-black/40 border border-white/10 rounded-2xl p-5 outline-none">
+
+          <input type="text" id="amenities" placeholder="Amenities (comma separated)" class="bg-black/40 border border-white/10 rounded-2xl p-5 outline-none">
+
+        </div>
+
+        <textarea
+          id="description"
+          placeholder="Property Description"
+          class="mt-6 w-full min-h-[180px] bg-black/40 border border-white/10 rounded-3xl p-6 outline-none"
+        ></textarea>
+
+        <button
+          onclick="addProperty()"
+          class="mt-8 px-10 py-5 rounded-full bg-gradient-to-r from-yellow-300 to-orange-500 text-black font-bold hover:scale-105 transition-all duration-300"
+        >
+          Publish Property
+        </button>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/10 py-10 text-center text-gray-500 uppercase tracking-[0.2em] text-sm">
+    © 2026 Imperial Estates • Luxury NFC Real Estate Platform
+  </footer>
+
+  <!-- SCRIPT -->
+  <script>
+
+    // API Configuration - CHANGE THIS TO YOUR SERVER URL
+    const API_URL = 'http://localhost:3000/api';
+
+    let isAdminLoggedIn = false;
+
+    // ============= FETCH PROPERTIES FROM DATABASE =============
+    
+    async function fetchProperties() {
+      try {
+        document.getElementById('loadingIndicator').style.display = 'block';
+        
+        const response = await fetch(`${API_URL}/properties`);
+        const properties = await response.json();
+        
+        document.getElementById('loadingIndicator').style.display = 'none';
+        renderProperties(properties);
+        
+      } catch (error) {
+        console.error('Error fetching properties:', error);
+        document.getElementById('loadingIndicator').innerHTML = `
+          <p class="text-red-400">⚠️ Unable to connect to server</p>
+          <p class="text-gray-500 text-sm mt-2">Make sure the backend server is running on port 3000</p>
+        `;
+      }
+    }
+
+    // ============= RENDER PROPERTIES =============
+    
+    function renderProperties(properties) {
+      
+      const propertyContainer = document.getElementById('propertyContainer');
+      propertyContainer.innerHTML = '';
+
+      if (properties.length === 0) {
+        propertyContainer.innerHTML = `
+          <div class="text-center py-20 text-gray-400">
+            No properties available yet. Admin can add properties from the dashboard.
+          </div>
+        `;
+        return;
+      }
+
+      properties.forEach((property) => {
+
+        propertyContainer.innerHTML += `
+
+          <div class="property-card grid lg:grid-cols-2 gap-10 rounded-[40px] overflow-hidden glass shadow-2xl">
+
+            <div class="relative overflow-hidden group">
+
+              <img
+                src="${property.image}"
+                class="w-full h-full min-h-[600px] object-cover transition-all duration-1000"
+              />
+
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+
+              <div class="absolute top-8 left-8 px-5 py-3 rounded-full bg-yellow-400 text-black font-bold shadow-2xl">
+                ${property.price}
+              </div>
+
+            </div>
+
+            <div class="p-10 flex flex-col justify-between">
+
+              <div>
+
+                <div class="text-yellow-400 uppercase tracking-[0.25em] text-xs mb-5">
+                  Luxury Listing
+                </div>
+
+                <h3 class="text-5xl font-black leading-tight mb-5">
+                  ${property.title}
+                </h3>
+
+                <p class="text-gray-400 text-lg mb-8">
+                  📍 ${property.location}
+                </p>
+
+                <p class="text-gray-300 text-lg leading-relaxed mb-10">
+                  ${property.description}
+                </p>
+
+                <div class="grid grid-cols-2 gap-5 mb-10">
+
+                  <div class="rounded-3xl border border-white/10 bg-black/30 p-6">
+                    <div class="text-gray-400 text-sm uppercase mb-2">Property Type</div>
+                    <div class="text-2xl font-bold">${property.type}</div>
+                  </div>
+
+                  <div class="rounded-3xl border border-white/10 bg-black/30 p-6">
+                    <div class="text-gray-400 text-sm uppercase mb-2">Property Area</div>
+                    <div class="text-2xl font-bold">${property.area}</div>
+                  </div>
+
+                </div>
+
+                <div class="flex flex-wrap gap-3 mb-10">
+
+                  ${property.amenities.split(',').map(item => `
+                    <div class="px-5 py-3 rounded-full border border-white/10 bg-white/[0.04]">
+                      ${item.trim()}
+                    </div>
+                  `).join('')}
+
+                </div>
+
+              </div>
+
+              <div class="flex flex-wrap gap-4">
+
+                <button
+                  onclick="openTour('${property.panorama}')"
+                  class="px-8 py-5 rounded-full bg-gradient-to-r from-yellow-300 to-orange-500 text-black font-bold hover:scale-105 transition-all duration-300"
+                >
+                  Open 360 Tour
+                </button>
+
+                <a
+                  href="https://wa.me/919999999999"
+                  target="_blank"
+                  class="px-8 py-5 rounded-full glass hover:bg-white/10 transition-all duration-300"
+                >
+                  WhatsApp Inquiry
+                </a>
+
+                ${isAdminLoggedIn ? `
+                  <button
+                    onclick="deleteProperty(${property.id})"
+                    class="px-8 py-5 rounded-full bg-red-600 hover:bg-red-700 transition-all duration-300 text-white"
+                  >
+                    Delete
+                  </button>
+                ` : ''}
+
+              </div>
+
+            </div>
+
+          </div>
+
+        `;
+      });
+    }
+
+    // ============= OPEN 360 TOUR =============
+    
+    function openTour(url) {
+      document.getElementById('viewer360').src = `https://cdn.pannellum.org/2.5/pannellum.htm#panorama=${url}`;
+      window.location.href = '#tour';
+    }
+
+    // ============= ADMIN LOGIN =============
+    
+    async function loginAdmin() {
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const response = await fetch(`${API_URL}/admin/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username, password })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          alert('✅ Admin Login Successful');
+          isAdminLoggedIn = true;
+          document.getElementById('adminPanel').style.display = 'block';
+          fetchProperties(); // Refresh to show delete buttons
+        } else {
+          alert('❌ Wrong Username or Password');
+        }
+
+      } catch (error) {
+        console.error('Login error:', error);
+        alert('⚠️ Unable to connect to server');
+      }
+    }
+
+    // ============= ADD PROPERTY =============
+    
+    async function addProperty() {
+
+      const property = {
+        title: document.getElementById('title').value,
+        location: document.getElementById('location').value,
+        price: document.getElementById('price').value,
+        type: document.getElementById('type').value,
+        area: document.getElementById('area').value,
+        image: document.getElementById('image').value,
+        panorama: document.getElementById('panorama').value,
+        description: document.getElementById('description').value,
+        amenities: document.getElementById('amenities').value
+      };
+
+      // Validation
+      if (!property.title || !property.location || !property.price) {
+        alert('⚠️ Please fill all required fields');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/properties`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(property)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert('✅ Property Added Successfully! It is now visible to everyone.');
+          
+          // Clear form
+          document.getElementById('title').value = '';
+          document.getElementById('location').value = '';
+          document.getElementById('price').value = '';
+          document.getElementById('type').value = '';
+          document.getElementById('area').value = '';
+          document.getElementById('image').value = '';
+          document.getElementById('panorama').value = '';
+          document.getElementById('description').value = '';
+          document.getElementById('amenities').value = '';
+          
+          // Refresh properties
+          fetchProperties();
+          
+        } else {
+          alert('❌ Error: ' + result.error);
+        }
+
+      } catch (error) {
+        console.error('Add property error:', error);
+        alert('⚠️ Unable to add property. Make sure server is running.');
+      }
+    }
+
+    // ============= DELETE PROPERTY =============
+    
+    async function deleteProperty(id) {
+      
+      if (!confirm('Are you sure you want to delete this property?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/properties/${id}`, {
+          method: 'DELETE'
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert('✅ Property Deleted Successfully');
+          fetchProperties();
+        } else {
+          alert('❌ Error: ' + result.error);
+        }
+
+      } catch (error) {
+        console.error('Delete error:', error);
+        alert('⚠️ Unable to delete property');
+      }
+    }
+
+    // ============= INITIALIZE =============
+    
+    // Load properties when page loads
+    fetchProperties();
+
+  </script>
+
+</body>
+</html>
